@@ -1,6 +1,8 @@
 ### Custom ###
 *.pyc
 *.blend[1-9]
+venv/
+
 
 # Created by https://www.gitignore.io/api/python,pycharm+all,unrealengine,visualstudiocode
 # Edit at https://www.gitignore.io/?templates=python,pycharm+all,unrealengine,visualstudiocode
