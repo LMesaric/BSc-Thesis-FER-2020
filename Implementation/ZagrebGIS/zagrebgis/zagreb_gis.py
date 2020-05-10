@@ -6,10 +6,10 @@ class VIEW3D_OT_ZagrebGIS(bpy.types.Operator):
     bl_label = "Generate Zagreb"
     bl_options = {"REGISTER", "UNDO"}
 
-    lat_left: bpy.props.FloatProperty()
-    long_left: bpy.props.FloatProperty()
-    lat_right: bpy.props.FloatProperty()
-    long_right: bpy.props.FloatProperty()
+    lat_left: bpy.props.FloatProperty(options={'HIDDEN'})
+    long_left: bpy.props.FloatProperty(options={'HIDDEN'})
+    lat_right: bpy.props.FloatProperty(options={'HIDDEN'})
+    long_right: bpy.props.FloatProperty(options={'HIDDEN'})
 
     def execute(self, context):
         # noinspection PyTypeChecker
