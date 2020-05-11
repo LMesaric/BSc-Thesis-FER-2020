@@ -1,4 +1,5 @@
 from __future__ import annotations
+from typing import Tuple
 from math import sqrt, sin, cos, atan2, asin, radians, degrees
 
 _R = 6371008.8
@@ -32,6 +33,21 @@ class Geolocation:
             cos(lat1) * cos(lat2) * (1 - cos(long1 - long2)) / 2.0
         c = 2 * atan2(sqrt(a), sqrt(1 - a))
         return _R * c
+
+    def span(self, top_right: Geolocation) -> Tuple[float, float]:
+        """Calculates dimensions of the defined rectangle with `self` as the bottom-left point.
+
+        :param top_right: Rectangle's top-right point
+        :return: height and width
+        """
+
+        top_left = Geolocation(top_right.lat, self.long)
+        bottom_right = Geolocation(self.lat, top_right.long)
+
+        vertical_dist = self.distance(top_left)
+        horizontal_dist = self.distance(bottom_right)
+
+        return vertical_dist, horizontal_dist
 
     def destination(self, distance: float, bearing: float) -> Geolocation:
         """Calculates the destination point with `self` as the starting point.
