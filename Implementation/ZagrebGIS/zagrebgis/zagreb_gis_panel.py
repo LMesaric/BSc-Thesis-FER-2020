@@ -1,5 +1,6 @@
 import bpy
 from bpy.props import FloatProperty
+
 from zagrebgis.zagreb_gis import VIEW3D_OT_ZagrebGIS
 
 

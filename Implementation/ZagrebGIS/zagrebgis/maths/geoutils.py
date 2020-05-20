@@ -1,6 +1,7 @@
 from __future__ import annotations
+
+from math import asin, atan2, cos, degrees, radians, sin, sqrt
 from typing import Tuple
-from math import sqrt, sin, cos, atan2, asin, radians, degrees
 
 _R = 6371008.8
 """Earth's mean radius in meters."""
