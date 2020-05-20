@@ -6,16 +6,16 @@ class VIEW3D_OT_ZagrebGIS(bpy.types.Operator):
     bl_label = "Generate Zagreb"
     bl_options = {"REGISTER", "UNDO"}
 
-    lat_left: bpy.props.FloatProperty(options={'HIDDEN'})
-    long_left: bpy.props.FloatProperty(options={'HIDDEN'})
-    lat_right: bpy.props.FloatProperty(options={'HIDDEN'})
-    long_right: bpy.props.FloatProperty(options={'HIDDEN'})
+    lat_bottom_left: bpy.props.FloatProperty(options={'HIDDEN'})
+    long_bottom_left: bpy.props.FloatProperty(options={'HIDDEN'})
+    lat_top_right: bpy.props.FloatProperty(options={'HIDDEN'})
+    long_top_right: bpy.props.FloatProperty(options={'HIDDEN'})
 
     def execute(self, context):
         # noinspection PyTypeChecker
         bpy.ops.mesh.primitive_cube_add(
-            location=(self.lat_left, self.long_left, self.lat_right),
-            size=self.long_right)
+            location=(self.lat_bottom_left, self.long_bottom_left, self.lat_top_right),
+            size=self.long_top_right)
 
         # TODO Use for notifications: self.report({'INFO'}, "message")
         return {"FINISHED"}  # TODO {'CANCELLED', 'FINISHED'}
