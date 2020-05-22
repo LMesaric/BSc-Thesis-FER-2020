@@ -1,3 +1,20 @@
+#    Zagreb GIS - Generate a Zagreb district model based on real data
+#    Copyright (C) 2020  Luka Mesarić (luka.mesaric@fer.hr)
+#
+#    This program is free software: you can redistribute it and/or modify
+#    it under the terms of the GNU General Public License as published by
+#    the Free Software Foundation, either version 3 of the License, or
+#    (at your option) any later version.
+#
+#    This program is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    GNU General Public License for more details.
+#
+#    You should have received a copy of the GNU General Public License
+#    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+
 from __future__ import annotations
 
 from math import asin, atan2, cos, degrees, radians, sin, sqrt
@@ -8,7 +25,11 @@ _R = 6371008.8
 
 
 class Geolocation:
-    """Geolocation with latitude and longitude in degrees."""
+    """Geolocation with latitude and longitude in degrees.
+
+    Uses mathematical formulas that can be found here:
+    https://www.movable-type.co.uk/scripts/latlong.html
+    """
 
     def __init__(self, lat: float, long: float):
         self.lat = lat
@@ -19,7 +40,6 @@ class Geolocation:
 
     def distance(self, p: Geolocation) -> float:
         """Calculates distance between `self` and `p` using the haversine formula.
-        https://www.movable-type.co.uk/scripts/latlong.html
 
         :param p: Other point
         :return: Distance in meters
