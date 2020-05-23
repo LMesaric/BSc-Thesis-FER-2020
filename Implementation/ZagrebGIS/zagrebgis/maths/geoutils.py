@@ -25,7 +25,8 @@ _R = 6371008.8
 
 
 class Geolocation:
-    """Geolocation with latitude and longitude in degrees.
+    """
+    Geolocation with latitude and longitude in degrees.
 
     Uses mathematical formulas that can be found here:
     https://www.movable-type.co.uk/scripts/latlong.html
@@ -39,7 +40,8 @@ class Geolocation:
         return f"({self.lat}, {self.long})"
 
     def distance(self, p: Geolocation) -> float:
-        """Calculates distance between `self` and `p` using the haversine formula.
+        """
+        Calculates distance between `self` and `p` using the haversine formula.
 
         :param p: Other point
         :return: Distance in meters
@@ -56,7 +58,8 @@ class Geolocation:
         return _R * c
 
     def span(self, top_right: Geolocation) -> Tuple[float, float]:
-        """Calculates dimensions of the defined rectangle with `self` as the bottom-left point.
+        """
+        Calculates dimensions of the defined rectangle with `self` as the bottom-left point.
 
         :param top_right: Rectangle's top-right point
         :return: height and width
@@ -71,7 +74,8 @@ class Geolocation:
         return vertical_dist, horizontal_dist
 
     def destination(self, distance: float, bearing: float) -> Geolocation:
-        """Calculates the destination point with `self` as the starting point.
+        """
+        Calculates the destination point with `self` as the starting point.
 
         :param distance: Distance to travel, in meters
         :param bearing: Bearing in radians

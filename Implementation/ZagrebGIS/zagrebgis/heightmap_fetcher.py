@@ -41,7 +41,8 @@ class HeightmapMeta:
 
 
 def download_map(bottom_left: Geolocation, top_right: Geolocation, temp_dir: str = None) -> HeightmapMeta:
-    """Downloads needed heightmap.
+    """
+    Downloads needed heightmap.
 
     :param bottom_left: Bottom-left (SW) corner
     :param top_right: Top-right (NE) corner
@@ -62,7 +63,8 @@ def download_map(bottom_left: Geolocation, top_right: Geolocation, temp_dir: str
 
 
 def _download_map_unzip(bottom_left: Geolocation, top_right: Geolocation, path: str, name: str) -> str:
-    """Downloads and unzips requested heightmap and other files. Saves it in a new directory inside `path`.
+    """
+    Downloads and unzips requested heightmap and other files. Saves it in a new directory inside `path`.
 
     :param bottom_left: Bottom-left (SW) corner
     :param top_right: Top-right (NE) corner
@@ -80,7 +82,8 @@ def _download_map_unzip(bottom_left: Geolocation, top_right: Geolocation, path: 
 
 
 def _download_map_request(bottom_left: Geolocation, top_right: Geolocation, name: str):
-    """Downloads requested heightmap. Does not change received data in any way. Times out after 40 seconds.
+    """
+    Downloads requested heightmap. Does not change received data in any way. Times out after 40 seconds.
 
     :param bottom_left: Bottom-left (SW) corner
     :param top_right: Top-right (NE) corner
@@ -99,7 +102,8 @@ def _download_map_request(bottom_left: Geolocation, top_right: Geolocation, name
 
 
 def _find_best_map(path: str, name: str) -> str:
-    """Finds path to best (merged) heightmap.
+    """
+    Finds path to best (merged) heightmap.
 
     :param path: Path to directory containing maps
     :param name: Name of downloaded map
@@ -114,7 +118,8 @@ def _find_best_map(path: str, name: str) -> str:
 
 
 def _find_extreme_heights(path: str, name: str) -> Tuple[float, float]:
-    """Finds minimum and maximum height written in README file.
+    """
+    Finds minimum and maximum height written in README file.
 
     :param path: Path to directory containing maps
     :param name: Name of downloaded map
@@ -133,7 +138,8 @@ def _find_extreme_heights(path: str, name: str) -> Tuple[float, float]:
 
 
 def _parse_heights_from_line(line: str) -> Tuple[float, float]:
-    """Extracts minimum and maximum height from a line.
+    """
+    Extracts minimum and maximum height from a line.
 
     :param line: Line of text
     :return: Minimum and maximum height
@@ -154,7 +160,8 @@ def _parse_heights_from_line(line: str) -> Tuple[float, float]:
 
 
 def _resize_map(input_path: str, output_dir: str, real_width_meters: float, real_height_meters: float) -> str:
-    """Resizes image (changes aspect ratio) to reflect real-world size.
+    """
+    Resizes image (changes aspect ratio) to reflect real-world size.
 
     :param input_path: Path to image to be rescaled
     :param output_dir: Directory in which rescaled image should be saved
