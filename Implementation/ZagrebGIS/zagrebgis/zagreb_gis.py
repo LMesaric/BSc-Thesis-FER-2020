@@ -15,7 +15,13 @@
 #    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 
+import traceback
+
 import bpy
+
+from zagrebgis.heightmap_fetcher import download_map, HeightmapMeta
+from zagrebgis.maths.geoutils import Geolocation
+from zagrebgis.terrain_creator import create_terrain
 
 
 class VIEW3D_OT_ZagrebGIS(bpy.types.Operator):
@@ -29,21 +35,32 @@ class VIEW3D_OT_ZagrebGIS(bpy.types.Operator):
     long_top_right: bpy.props.FloatProperty(options={'HIDDEN'})
 
     def execute(self, context):
-        if not self.check_input():
+        if not self._check_input():
             return {'CANCELLED'}
 
-        # noinspection PyTypeChecker
-        bpy.ops.mesh.primitive_cube_add(
-            location=(self.lat_bottom_left, self.long_bottom_left, self.lat_top_right),
-            size=self.long_top_right)
+        try:
+            self.report({'INFO'}, "Starting terrain download...")
+            heightmap_meta = download_map(
+                Geolocation(self.lat_bottom_left, self.long_bottom_left),
+                Geolocation(self.lat_top_right, self.long_top_right)
+            )
+            self.report({'INFO'}, "Terrain downloaded")
+            VIEW3D_OT_ZagrebGIS._set_clip_end(heightmap_meta)
+            create_terrain(heightmap_meta)
+            self.report({'INFO'}, "Terrain generated")
 
-        # TODO Use for notifications: self.report({'INFO'}, "message")
-        #  {'DEBUG', 'INFO', 'OPERATOR', 'PROPERTY', 'WARNING', 'ERROR',
-        #  'ERROR_INVALID_INPUT', 'ERROR_INVALID_CONTEXT', 'ERROR_OUT_OF_MEMORY'}
+            # TODO Use for notifications: self.report({'INFO'}, "message")
+            #  {'DEBUG', 'INFO', 'OPERATOR', 'PROPERTY', 'WARNING', 'ERROR',
+            #  'ERROR_INVALID_INPUT', 'ERROR_INVALID_CONTEXT', 'ERROR_OUT_OF_MEMORY'}
 
-        return {'FINISHED'}  # TODO {'CANCELLED', 'FINISHED'}
+            return {'FINISHED'}  # TODO {'CANCELLED', 'FINISHED'}
 
-    def check_input(self) -> bool:
+        except Exception as e:
+            self.report({'ERROR'}, repr(e))
+            traceback.print_exc()
+            return {'CANCELLED'}
+
+    def _check_input(self) -> bool:
         threshold = 0.2  # roughly 15-20 km
         delta_lat = self.lat_top_right - self.lat_bottom_left
         delta_long = self.long_top_right - self.long_bottom_left
@@ -63,6 +80,16 @@ class VIEW3D_OT_ZagrebGIS(bpy.types.Operator):
             return False
 
         return True
+
+    @staticmethod
+    def _set_clip_end(heightmap_meta: HeightmapMeta) -> None:
+        possible_clip_end = 10 * max(heightmap_meta.bottom_left.span(heightmap_meta.top_right))
+        for a in bpy.context.screen.areas:
+            if a.type == 'VIEW_3D':
+                for s in a.spaces:
+                    if s.type == 'VIEW_3D':
+                        if s.clip_end < possible_clip_end:
+                            s.clip_end = possible_clip_end
 
 
 def register():
