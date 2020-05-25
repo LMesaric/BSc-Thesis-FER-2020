@@ -42,6 +42,7 @@ class Geolocation:
     def distance(self, p: Geolocation) -> float:
         """
         Calculates distance between `self` and `p` using the haversine formula.
+        Order is irrelevant.
 
         :param p: Other point
         :return: Distance in meters
@@ -57,19 +58,20 @@ class Geolocation:
         c = 2 * atan2(sqrt(a), sqrt(1 - a))
         return _R * c
 
-    def span(self, top_right: Geolocation) -> Tuple[float, float]:
+    def span(self, diagonal_corner: Geolocation) -> Tuple[float, float]:
         """
-        Calculates dimensions of the defined rectangle with `self` as the bottom-left point.
+        Calculates dimensions of the rectangle defined by `self` and `diagonal_corner`.
+        Order is irrelevant.
 
-        :param top_right: Rectangle's top-right point
+        :param diagonal_corner: Rectangle's top-right point
         :return: height and width
         """
 
-        top_left = Geolocation(top_right.lat, self.long)
-        bottom_right = Geolocation(self.lat, top_right.long)
+        another_corner = Geolocation(diagonal_corner.lat, self.long)
 
-        vertical_dist = self.distance(top_left)
-        horizontal_dist = self.distance(bottom_right)
+        vertical_dist = self.distance(another_corner)
+        diagonal_dist = self.distance(diagonal_corner)
+        horizontal_dist = sqrt(diagonal_dist * diagonal_dist - vertical_dist * vertical_dist)
 
         return vertical_dist, horizontal_dist
 
