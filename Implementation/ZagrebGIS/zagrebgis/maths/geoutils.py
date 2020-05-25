@@ -89,6 +89,25 @@ class Geolocation:
             return None
         return self.span(top_right)
 
+    def is_in_bounds(self, bottom_left: Geolocation, top_right: Geolocation) -> bool:
+        """
+        Tests if `self` is inside rectangle defined by `bottom_left` and `top_right`.
+
+        :param bottom_left: Bottom-left (SW) corner
+        :param top_right: Top-right (NE) corner
+        :return: `True` if in bounds, `False` otherwise
+        """
+
+        if self.lat < bottom_left.lat:
+            return False
+        if self.lat > top_right.lat:
+            return False
+        if self.long < bottom_left.long:
+            return False
+        if self.long > top_right.long:
+            return False
+        return True
+
     def destination(self, distance: float, bearing: float) -> Geolocation:
         """
         Calculates the destination point with `self` as the starting point.
