@@ -22,6 +22,7 @@ import bmesh
 import bpy
 from mathutils import Matrix, Vector
 
+from zagrebgis.constants import TERRAIN_VERTICES_DISTANCE
 from zagrebgis.heightmap_fetcher import HeightmapMeta
 
 
@@ -36,8 +37,8 @@ def create_terrain(heightmap_meta: HeightmapMeta):
     bigger_side = max(x_size, y_size)
 
     bpy.ops.mesh.primitive_grid_add(
-        x_subdivisions=round(x_size / 4),
-        y_subdivisions=round(y_size / 4),
+        x_subdivisions=round(x_size / TERRAIN_VERTICES_DISTANCE),
+        y_subdivisions=round(y_size / TERRAIN_VERTICES_DISTANCE),
         size=bigger_side)
 
     bpy.context.active_object.scale = (x_size / bigger_side, y_size / bigger_side, 1)
