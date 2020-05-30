@@ -23,4 +23,7 @@ TERRAIN_CLOSE_THRESH = 0.72 * TERRAIN_VERTICES_DISTANCE
 # slightly greater than sqrt(2)/2 which is max distance (square's middle)
 
 HEIGHT_PER_LEVEL = 4
-"""Estimated height of each floor in buildings"""
+"""Estimated height of each floor in buildings."""
+
+NETWORK_TIMEOUT = 40
+"""Time in seconds before a network request times out."""
