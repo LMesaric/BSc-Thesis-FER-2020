@@ -23,6 +23,7 @@ from zipfile import ZipFile
 
 import bpy
 
+from zagrebgis.constants import NETWORK_TIMEOUT
 from zagrebgis.maths.geoutils import Geolocation
 
 
@@ -83,7 +84,8 @@ def _download_map_unzip(bottom_left: Geolocation, top_right: Geolocation, path: 
 
 def _download_map_request(bottom_left: Geolocation, top_right: Geolocation, name: str):
     """
-    Downloads requested heightmap. Does not change received data in any way. Times out after 40 seconds.
+    Downloads requested heightmap. Does not change received data in any way.
+    Times out after 40 seconds.
 
     :param bottom_left: Bottom-left (SW) corner
     :param top_right: Top-right (NE) corner
@@ -96,7 +98,7 @@ def _download_map_request(bottom_left: Geolocation, top_right: Geolocation, name
     # URL example: http://terrain.party/api/export?name=my_map&box=16.025063,45.843957,15.921900,45.772092
     base_url = r"http://terrain.party/api/export"
     payload = {'name': name, 'box': f'{top_right.long},{top_right.lat},{bottom_left.long},{bottom_left.lat}'}
-    r = requests.get(base_url, payload, timeout=40)
+    r = requests.get(base_url, payload, timeout=NETWORK_TIMEOUT)
     r.raise_for_status()
     return r
 
