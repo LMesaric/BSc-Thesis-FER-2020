@@ -19,7 +19,10 @@ import traceback
 
 import bpy
 
+from zagrebgis.building_creator import create_buildings_many
+from zagrebgis.building_fetcher import get_all_buildings
 from zagrebgis.heightmap_fetcher import download_map, HeightmapMeta
+from zagrebgis.location_finder import LocationFinder
 from zagrebgis.maths.geoutils import Geolocation
 from zagrebgis.terrain_creator import create_terrain
 
@@ -39,19 +42,24 @@ class VIEW3D_OT_ZagrebGIS(bpy.types.Operator):
             return {'CANCELLED'}
 
         try:
-            self.report({'INFO'}, "Starting terrain download...")
-            heightmap_meta = download_map(
-                Geolocation(self.lat_bottom_left, self.long_bottom_left),
-                Geolocation(self.lat_top_right, self.long_top_right)
-            )
+            bottom_left = Geolocation(self.lat_bottom_left, self.long_bottom_left)
+            top_right = Geolocation(self.lat_top_right, self.long_top_right)
+
+            heightmap_meta = download_map(bottom_left, top_right)
             self.report({'INFO'}, "Terrain downloaded")
+
             VIEW3D_OT_ZagrebGIS._set_clip_end(heightmap_meta)
             create_terrain(heightmap_meta)
-            self.report({'INFO'}, "Terrain generated")
+
+            location_finder = LocationFinder(bpy.context.active_object, bottom_left, top_right)
+            buildings = get_all_buildings(bottom_left, top_right, location_finder)
+            self.report({'INFO'}, "Buildings downloaded")
+            create_buildings_many(buildings, location_finder)
+
+            self.report({'INFO'}, "Everything was successfully generated")
 
             # TODO Use for notifications: self.report({'INFO'}, "message")
-            #  {'DEBUG', 'INFO', 'OPERATOR', 'PROPERTY', 'WARNING', 'ERROR',
-            #  'ERROR_INVALID_INPUT', 'ERROR_INVALID_CONTEXT', 'ERROR_OUT_OF_MEMORY'}
+            #  {'INFO', 'WARNING', 'ERROR', 'ERROR_INVALID_INPUT', 'ERROR_INVALID_CONTEXT'}
 
             return {'FINISHED'}  # TODO {'CANCELLED', 'FINISHED'}
 
