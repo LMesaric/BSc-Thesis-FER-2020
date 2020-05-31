@@ -36,6 +36,7 @@ class VIEW3D_OT_ZagrebGIS(bpy.types.Operator):
     long_bottom_left: bpy.props.FloatProperty(options={'HIDDEN'})
     lat_top_right: bpy.props.FloatProperty(options={'HIDDEN'})
     long_top_right: bpy.props.FloatProperty(options={'HIDDEN'})
+    terrain_height_scale: bpy.props.FloatProperty(options={'HIDDEN'})
 
     def execute(self, context):
         if not self._check_input():
@@ -49,7 +50,7 @@ class VIEW3D_OT_ZagrebGIS(bpy.types.Operator):
             self.report({'INFO'}, "Terrain downloaded")
 
             VIEW3D_OT_ZagrebGIS._set_clip_end(heightmap_meta)
-            create_terrain(heightmap_meta)
+            create_terrain(heightmap_meta, self.terrain_height_scale)
 
             location_finder = LocationFinder(bpy.context.active_object, bottom_left, top_right)
             buildings = get_all_buildings(bottom_left, top_right, location_finder)

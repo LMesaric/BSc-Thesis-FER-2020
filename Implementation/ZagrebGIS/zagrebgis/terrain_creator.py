@@ -26,11 +26,12 @@ from zagrebgis.constants import TERRAIN_VERTICES_DISTANCE
 from zagrebgis.heightmap_fetcher import HeightmapMeta
 
 
-def create_terrain(heightmap_meta: HeightmapMeta):
+def create_terrain(heightmap_meta: HeightmapMeta, scaling_factor: float):
     """
     Creates terrain from a Grid in 1:1 scale using given heightmap.
 
     :param heightmap_meta: Heightmap metadata
+    :param scaling_factor: Height scaling factor
     """
 
     y_size, x_size = heightmap_meta.bottom_left.span(heightmap_meta.top_right)
@@ -43,11 +44,16 @@ def create_terrain(heightmap_meta: HeightmapMeta):
 
     bpy.context.active_object.scale = (x_size / bigger_side, y_size / bigger_side, 1)
 
-    if heightmap_meta.max_height - heightmap_meta.min_height <= 0:
-        # No need to use the heightmap if area is completely flat (less than 1m of elevation difference)
-        return
-
+    # Clipping must be done even if map is not applied, otherwise
+    # the terrain thinks it's a square for some unexplained reason.
     _clip_uv_edges()
+
+    real_world_height = heightmap_meta.max_height - heightmap_meta.min_height
+    scaled_real_world_height = real_world_height * scaling_factor
+    if scaled_real_world_height <= 0.1:
+        # No need to use the heightmap if area is completely flat (less than 10cm of elevation difference)
+        # in order to avoid dividing very small numbers (or possibly 0) in height_scale_factor
+        return
 
     bpy.data.images.load(heightmap_meta.path_to_file)
     height_tex = bpy.data.textures.new('Heightmap texture', type='IMAGE')
@@ -62,8 +68,7 @@ def create_terrain(heightmap_meta: HeightmapMeta):
 
     tmp_min, tmp_max = _local_min_max_mods_fake_applied()
     curr_height = tmp_max.z - tmp_min.z
-    real_world_height = heightmap_meta.max_height - heightmap_meta.min_height
-    height_scale_factor = real_world_height / curr_height
+    height_scale_factor = scaled_real_world_height / curr_height
     disp_mod.strength *= height_scale_factor
 
     bpy.ops.object.modifier_apply(apply_as='DATA', modifier=disp_mod.name)

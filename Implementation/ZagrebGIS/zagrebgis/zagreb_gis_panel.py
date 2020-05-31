@@ -44,6 +44,11 @@ class VIEW3D_PT_ZagrebGISPanel(bpy.types.Panel):
         layout.row().prop(scene, "global_long_top_right", text="Longitude:")
 
         layout.row().separator()
+
+        layout.label(text="Terrain height scaling:")
+        layout.row().prop(scene, "global_terrain_height_scale", text="Factor:")
+
+        layout.row().separator()
         layout.row().separator()
 
         row = layout.row()
@@ -54,20 +59,23 @@ class VIEW3D_PT_ZagrebGISPanel(bpy.types.Panel):
         props.long_bottom_left = scene.global_long_bottom_left
         props.lat_top_right = scene.global_lat_top_right
         props.long_top_right = scene.global_long_top_right
+        props.terrain_height_scale = scene.global_terrain_height_scale
 
 
 def register():
     bpy.utils.register_class(VIEW3D_PT_ZagrebGISPanel)
     s = bpy.types.Scene
-    s.global_lat_bottom_left = FloatProperty(default=45.807489, min=-90.0, max=90.0, step=1, precision=6)
-    s.global_long_bottom_left = FloatProperty(default=15.968137, min=-180.0, max=180.0, step=1, precision=6)
-    s.global_lat_top_right = FloatProperty(default=45.809628, min=-90.0, max=90.0, step=1, precision=6)
-    s.global_long_top_right = FloatProperty(default=15.972560, min=-180.0, max=180.0, step=1, precision=6)
+    s.global_lat_bottom_left = FloatProperty(default=45.807212, min=-90.0, max=90.0, step=1, precision=6)
+    s.global_long_bottom_left = FloatProperty(default=15.971431, min=-180.0, max=180.0, step=1, precision=6)
+    s.global_lat_top_right = FloatProperty(default=45.809590, min=-90.0, max=90.0, step=1, precision=6)
+    s.global_long_top_right = FloatProperty(default=15.977082, min=-180.0, max=180.0, step=1, precision=6)
+    s.global_terrain_height_scale = FloatProperty(default=1, min=0, soft_max=3, step=1, precision=3)
 
 
 # noinspection PyUnresolvedReferences
 def unregister():
     s = bpy.types.Scene
+    del s.global_terrain_height_scale
     del s.global_long_top_right
     del s.global_lat_top_right
     del s.global_long_bottom_left
