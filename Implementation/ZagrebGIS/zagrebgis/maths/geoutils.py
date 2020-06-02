@@ -32,6 +32,8 @@ class Geolocation:
     https://www.movable-type.co.uk/scripts/latlong.html
     """
 
+    __slots__ = ['lat', 'long']
+
     def __init__(self, lat: float, long: float):
         self.lat = lat
         self.long = long
