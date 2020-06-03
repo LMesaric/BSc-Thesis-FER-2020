@@ -15,6 +15,7 @@
 #    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 
+import time
 import traceback
 
 import bpy
@@ -25,6 +26,8 @@ from zagrebgis.heightmap_fetcher import download_map, HeightmapMeta
 from zagrebgis.location_finder import LocationFinder
 from zagrebgis.maths.geoutils import Geolocation
 from zagrebgis.terrain_creator import create_terrain
+from zagrebgis.tree_creator import create_trees_many
+from zagrebgis.tree_fetcher import get_all_trees
 
 
 class VIEW3D_OT_ZagrebGIS(bpy.types.Operator):
@@ -43,26 +46,49 @@ class VIEW3D_OT_ZagrebGIS(bpy.types.Operator):
             return {'CANCELLED'}
 
         try:
+            # self.report will only be seen when everything finishes, it does not print immediately
+            start_time_total = time.time()
+
             bottom_left = Geolocation(self.lat_bottom_left, self.long_bottom_left)
             top_right = Geolocation(self.lat_top_right, self.long_top_right)
 
+            start_time = time.time()
+            print('GIS INFO: Starting terrain download...')
             heightmap_meta = download_map(bottom_left, top_right)
-            self.report({'INFO'}, "Terrain downloaded")
+            print(f'GIS INFO: Terrain downloaded --- {time.time() - start_time:.2f}s')
 
+            start_time = time.time()
             VIEW3D_OT_ZagrebGIS._set_clip_end(heightmap_meta)
             create_terrain(heightmap_meta, self.terrain_height_scale)
+            print(f'GIS INFO: Terrain created --- {time.time() - start_time:.2f}s')
 
             location_finder = LocationFinder(bpy.context.active_object, bottom_left, top_right)
+
+            start_time = time.time()
+            print('GIS INFO: Starting buildings download...')
             buildings = get_all_buildings(bottom_left, top_right, location_finder)
-            self.report({'INFO'}, "Buildings downloaded")
+            print(f'GIS INFO: Buildings downloaded --- {time.time() - start_time:.2f}s')
+
+            start_time = time.time()
             create_buildings_many(buildings, location_finder)
+            print(f'GIS INFO: Buildings created --- {time.time() - start_time:.2f}s')
+
+            start_time = time.time()
+            print('GIS INFO: Starting trees download...')
+            trees = get_all_trees(bottom_left, top_right, location_finder)
+            print(f'GIS INFO: Trees downloaded --- {time.time() - start_time:.2f}s')
+
+            start_time = time.time()
+            create_trees_many(trees, location_finder)
+            print(f'GIS INFO: Trees created --- {time.time() - start_time:.2f}s')
 
             self.report({'INFO'}, "Everything was successfully generated")
+            print(f'GIS INFO: Total runtime --- {time.time() - start_time_total:.2f}s')
 
             # TODO Use for notifications: self.report({'INFO'}, "message")
             #  {'INFO', 'WARNING', 'ERROR', 'ERROR_INVALID_INPUT', 'ERROR_INVALID_CONTEXT'}
 
-            return {'FINISHED'}  # TODO {'CANCELLED', 'FINISHED'}
+            return {'FINISHED'}
 
         except Exception as e:
             self.report({'ERROR'}, repr(e))
