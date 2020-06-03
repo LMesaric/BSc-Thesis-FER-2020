@@ -23,7 +23,7 @@ bl_info = {
     "name": "Zagreb GIS",
     "description": "Generates a Zagreb district model based on real data.",
     "author": "Luka Mesarić",
-    "version": (0, 3),
+    "version": (0, 4),
     "blender": (2, 82, 0),  # TODO Check compatibility
     "location": "View3D > Sidebar > ZagrebGIS Tab",
     "tracker_url": "https://github.com/LMesaric/BSc-Thesis-FER-2020/issues",
