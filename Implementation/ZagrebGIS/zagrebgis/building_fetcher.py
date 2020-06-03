@@ -24,11 +24,9 @@ from zagrebgis.maths.geoutils import Geolocation
 
 
 class Node:
-    __slots__ = ['lat', 'long', 'xy']
+    __slots__ = ['xy']
 
     def __init__(self, lat: float, long: float, location_finder: LocationFinder):
-        self.lat = lat
-        self.long = long
         self.xy = location_finder.location_to_xy(Geolocation(lat, long))
 
 
