@@ -37,7 +37,8 @@ from collections import namedtuple
 
 Dependency = namedtuple("Dependency", ["module", "package", "name"])
 dependencies = (Dependency(module="PIL", package="Pillow", name=None),
-                Dependency(module="requests", package=None, name=None))
+                Dependency(module="requests", package=None, name=None),
+                Dependency(module="pyproj", package=None, name=None))
 
 dependencies_installed = False
 
