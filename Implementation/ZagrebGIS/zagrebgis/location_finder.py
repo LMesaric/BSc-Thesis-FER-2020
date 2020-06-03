@@ -46,8 +46,10 @@ class LocationFinder:
     def find_lowest_height(self, x: float, y: float) -> float:
         return min(self.find_close_points(x, y), key=lambda v: v.z).z
 
-    def find_lowest_height_many(self, p: Iterable[Tuple[float, float]]) -> float:
-        return min(self.find_close_points_many(p), key=lambda v: v.z).z
+    def find_lowest_and_highest_many(self, p: Iterable[Tuple[float, float]]) -> Tuple[float, float]:
+        close_points = self.find_close_points_many(p)
+        return (min(close_points, key=lambda v: v.z).z,
+                max(close_points, key=lambda v: v.z).z)
 
     def location_to_xy(self, location: Geolocation) -> Tuple[float, float]:
         if not location.is_in_bounds(self.bottom_left, self.top_right):

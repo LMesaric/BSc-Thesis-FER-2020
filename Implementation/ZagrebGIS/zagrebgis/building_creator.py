@@ -31,9 +31,9 @@ def create_buildings_many(buildings: Iterable[Building], location_finder: Locati
 
 def create_building(building: Building, location_finder: LocationFinder):
     verts = [n.xy for n in building.nodes]
-    v, f, (x, y) = verts_and_faces_from_footprint(verts, building.height)
-    z = location_finder.find_lowest_height_many(verts)
-    add_mesh("Building", v, f, translate=(x, y, z))
+    z_min, z_max = location_finder.find_lowest_and_highest_many(verts)
+    v, f, (x, y) = verts_and_faces_from_footprint(verts, building.height + z_max - z_min)
+    add_mesh("Building", v, f, translate=(x, y, z_min))
 
 
 def add_mesh(name: str, verts: List[Vector], faces: List[List[int]], edges=None,
