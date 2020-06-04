@@ -18,7 +18,7 @@
 from typing import Iterable, List, Tuple
 
 import bpy
-from mathutils import Matrix, Vector
+from mathutils import Vector
 
 from zagrebgis.building_fetcher import Building
 from zagrebgis.location_finder import LocationFinder
@@ -33,11 +33,11 @@ def create_building(building: Building, location_finder: LocationFinder):
     verts = [n.xy for n in building.nodes]
     z_min, z_max = location_finder.find_lowest_and_highest_many(verts)
     v, f, (x, y) = verts_and_faces_from_footprint(verts, building.height + z_max - z_min)
-    add_mesh("Building", v, f, translate=(x, y, z_min))
+    add_mesh("Building", v, f, location=(x, y, z_min))
 
 
 def add_mesh(name: str, verts: List[Vector], faces: List[List[int]], edges=None,
-             translate: Tuple[float, float, float] = None,
+             location: Tuple[float, float, float] = None,
              col_name: str = "Collection",
              recalculate_normals: bool = True,
              select: bool = False):
@@ -52,7 +52,7 @@ def add_mesh(name: str, verts: List[Vector], faces: List[List[int]], edges=None,
     mesh.from_pydata(verts, edges, faces)
 
     obj = bpy.context.object
-    obj.matrix_world = Matrix.Translation(translate) @ obj.matrix_world
+    bpy.context.object.location = location
 
     if recalculate_normals:
         bpy.ops.object.mode_set(mode='EDIT')
