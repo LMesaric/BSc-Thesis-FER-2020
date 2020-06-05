@@ -69,11 +69,13 @@ def _download_buildings_request(bottom_left: Geolocation, top_right: Geolocation
     import requests
 
     bbox = f'{bottom_left.lat},{bottom_left.long},{top_right.lat},{top_right.long}'
-    # query: any way or relation with any building tag
+    # query: any way or relation with any building or building:part tag
     query = f"""[out:json][timeout:{NETWORK_TIMEOUT}];
 (
   way["building"]({bbox});
   relation["building"]({bbox});
+  way["building:part"]({bbox});
+  relation["building:part"]({bbox});
 );
 out body;
 >;
