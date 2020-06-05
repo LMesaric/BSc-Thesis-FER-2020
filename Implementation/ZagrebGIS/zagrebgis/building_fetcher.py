@@ -16,7 +16,7 @@
 
 
 import random
-from typing import Callable, Dict, List, Tuple
+from typing import Any, Callable, Dict, List, Optional, Tuple, Union
 
 from zagrebgis.constants import HEIGHT_PER_LEVEL, NETWORK_TIMEOUT
 from zagrebgis.location_finder import LocationFinder
@@ -28,6 +28,16 @@ class Node:
 
     def __init__(self, lat: float, long: float, location_finder: LocationFinder):
         self.xy = location_finder.location_to_xy(Geolocation(lat, long))
+
+
+class WayRaw:
+    __slots__ = ['way_id', 'node_ids', 'height', 'levels']
+
+    def __init__(self, way_id: int, node_ids: List[int], height: Optional[float], levels: Optional[float]):
+        self.way_id = way_id
+        self.node_ids = node_ids
+        self.height = height
+        self.levels = levels
 
 
 class Building:
@@ -90,16 +100,16 @@ out skel qt;"""
 
 
 def _parse_buildings_response(s: str, location_finder: LocationFinder) \
-        -> Tuple[Dict[int, Node], List[List[int]]]:
+        -> Tuple[Dict[int, Node], Dict[int, WayRaw]]:
     import json
 
-    elements = json.loads(s)['elements']
+    elements = json.loads(s).get('elements')
 
     nodes: Dict[int, Node] = {}
-    ways: List[List[int]] = []
+    ways: Dict[int, WayRaw] = {}
 
     for e in elements:
-        element_type = e['type']
+        element_type = e.get('type')
 
         if element_type == 'node':
             try:
@@ -108,43 +118,102 @@ def _parse_buildings_response(s: str, location_finder: LocationFinder) \
                 pass
 
         elif element_type == 'way':
-            way_nodes: List[int] = e['nodes']
 
-            if len(way_nodes) < 4:
-                print(f'Nodes list too short: {way_nodes}')
+            way_id = e.get('id')
+            if way_id is None:
+                print(f'Missing way ID: {e}')
                 continue
 
-            if way_nodes[0] != way_nodes[-1]:
-                print(f'Nodes list does not form a loop: {way_nodes}')
+            way_node_ids: Optional[List[int]] = e.get('nodes')
+            if way_node_ids is None:
+                print(f'Missing nodes in way: {e}')
                 continue
 
-            del way_nodes[-1]  # drop duplicate node since loop is implied
+            if len(way_node_ids) < 4:
+                print(f'Nodes list too short: {way_node_ids}')
+                continue
 
-            ways.append(way_nodes)
+            if way_node_ids[0] != way_node_ids[-1]:
+                print(f'Nodes list does not form a loop: {way_node_ids}')
+                continue
+
+            del way_node_ids[-1]  # drop duplicate node since loop is implied
+
+            way_height: Optional[float] = None
+            way_levels: Optional[float] = None
+            way_tags: Optional[Dict[str, Any]] = e.get('tags')
+            if way_tags is not None:
+                way_height = _parse_height_tag(way_tags)
+                way_levels = _parse_levels_tag(way_tags)
+
+            ways[way_id] = WayRaw(way_id, way_node_ids, way_height, way_levels)
 
         elif element_type == 'relation':
             pass
 
         else:
-            print(f'Unknown type: {element_type}')
+            print(f'Unknown type: {e}')
 
     return nodes, ways
 
 
-def _convert_buildings(nodes: Dict[int, Node], ways: List[List[int]]) -> List[Building]:
+def _parse_height_tag(tags: Dict[str, Any]) -> Optional[float]:
+    height_raw: Optional[Union[int, float, str]] = tags.get('height')
+    if height_raw is None:
+        height_raw = tags.get('building:height')
+
+    if height_raw is None:
+        return None
+
+    try:
+        return float(height_raw)
+    except ValueError:
+        # height_raw is probably something like '22 m'
+        pass
+
+    parts = height_raw.split()
+    if len(parts) != 2 or parts[1] != 'm':
+        print(f'Cannot parse height data: {height_raw}')
+        return None
+
+    try:
+        return float(parts[0])
+    except ValueError:
+        print(f'Cannot parse height data: {height_raw}')
+        return None
+
+
+def _parse_levels_tag(tags: Dict[str, Any]) -> Optional[float]:
+    levels_raw: Optional[Union[int, float]] = tags.get('levels')
+    if levels_raw is None:
+        levels_raw = tags.get('building:levels')
+
+    if levels_raw is None:
+        return None
+
+    try:
+        return float(levels_raw)
+    except ValueError:
+        print(f'Cannot parse levels data: {levels_raw}')
+        return None
+
+
+def _convert_buildings(nodes: Dict[int, Node], ways: Dict[int, WayRaw]) -> List[Building]:
     def random_height() -> float:
         return random.uniform(8, 25)
 
     buildings: List[Building] = []
-    for way in ways:
+    for way_id, way_raw in ways.items():
         way_nodes_converted: List[Node] = []
 
-        for node_id in way:
+        for node_id in way_raw.node_ids:
             node = nodes.get(node_id)
             if node is None:
                 break
             way_nodes_converted.append(node)
         else:
-            buildings.append(Building(nodes=way_nodes_converted, height_random_func=random_height))
+            buildings.append(
+                Building(nodes=way_nodes_converted, height_random_func=random_height,
+                         height=way_raw.height, levels=way_raw.levels))
 
     return buildings
