@@ -20,7 +20,7 @@ from typing import Iterable, List, Tuple
 import bpy
 from mathutils import Vector
 
-from zagrebgis.building_fetcher import Building
+from zagrebgis.building_fetcher import Building, Relation
 from zagrebgis.location_finder import LocationFinder
 
 
@@ -29,11 +29,51 @@ def create_buildings_many(buildings: Iterable[Building], location_finder: Locati
         create_building(building, location_finder)
 
 
-def create_building(building: Building, location_finder: LocationFinder):
+def create_building(building: Building, location_finder: LocationFinder, height_delta: float = 0.0):
     verts = [n.xy for n in building.nodes]
     z_min, z_max = location_finder.find_lowest_and_highest_many(verts)
-    v, f, (x, y) = verts_and_faces_from_footprint(verts, building.height + z_max - z_min)
-    add_mesh("Building", v, f, location=(x, y, z_min))
+    terrain_z_delta = z_max - z_min
+    total_height = building.height + terrain_z_delta + height_delta * 2
+    v, f, (x, y) = verts_and_faces_from_footprint(verts, total_height)
+    add_mesh("Building", v, f, location=(x, y, z_min - height_delta))
+
+
+def create_relations_many(relations: Iterable[Relation], location_finder: LocationFinder):
+    for relation in relations:
+        create_relation(relation, location_finder)
+
+
+def create_relation(relation: Relation, location_finder: LocationFinder):
+    if not relation.positive_buildings:
+        return
+
+    positive_meshes_names: List[str] = []
+    negative_meshes_names: List[str] = []
+
+    for positive_building in relation.positive_buildings:
+        create_building(positive_building, location_finder)
+        positive_meshes_names.append(bpy.context.active_object.name)
+
+    for negative_building in relation.negative_buildings:
+        create_building(negative_building, location_finder, 30.0)
+        negative_meshes_names.append(bpy.context.active_object.name)
+
+    for negative_building_name in negative_meshes_names:
+        for positive_building_name in positive_meshes_names:
+            # noinspection PyTypeChecker
+            bool_mod = bpy.data.objects[positive_building_name].modifiers.new(type="BOOLEAN", name="boolean_diff")
+            # noinspection PyTypeChecker
+            bool_mod.object = bpy.data.objects[negative_building_name]
+            bool_mod.operation = 'DIFFERENCE'
+
+            # noinspection PyTypeChecker
+            bpy.context.view_layer.objects.active = bpy.data.objects[positive_building_name]
+            bpy.ops.object.modifier_apply(apply_as='DATA', modifier=bool_mod.name)
+
+        bpy.ops.object.select_all(action='DESELECT')
+        # noinspection PyTypeChecker
+        bpy.data.objects[negative_building_name].select_set(True)
+        bpy.ops.object.delete()
 
 
 def add_mesh(name: str, verts: List[Vector], faces: List[List[int]], edges=None,
