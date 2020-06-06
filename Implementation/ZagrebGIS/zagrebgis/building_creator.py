@@ -39,8 +39,7 @@ def create_building(building: Building, location_finder: LocationFinder):
 def add_mesh(name: str, verts: List[Vector], faces: List[List[int]], edges=None,
              location: Tuple[float, float, float] = None,
              col_name: str = "Collection",
-             recalculate_normals: bool = True,
-             select: bool = False):
+             recalculate_normals: bool = True):
     if edges is None:
         edges = []
 
@@ -51,17 +50,12 @@ def add_mesh(name: str, verts: List[Vector], faces: List[List[int]], edges=None,
     bpy.context.view_layer.objects.active = obj
     mesh.from_pydata(verts, edges, faces)
 
-    obj = bpy.context.object
     bpy.context.object.location = location
 
     if recalculate_normals:
         bpy.ops.object.mode_set(mode='EDIT')
         bpy.ops.mesh.normals_make_consistent()
         bpy.ops.object.mode_set(mode='OBJECT')
-
-    if select:
-        bpy.ops.object.select_all(action='DESELECT')
-        obj.select_set(True)
 
 
 def verts_and_faces_from_footprint(verts_xy_foot: List[Tuple[float, float]], height: float) \
