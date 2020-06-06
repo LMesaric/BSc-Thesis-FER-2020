@@ -20,7 +20,7 @@ import traceback
 
 import bpy
 
-from zagrebgis.building_creator import create_buildings_many
+from zagrebgis.building_creator import create_buildings_many, create_relations_many
 from zagrebgis.building_fetcher import get_all_buildings
 from zagrebgis.heightmap_fetcher import download_map, HeightmapMeta
 from zagrebgis.location_finder import LocationFinder
@@ -66,11 +66,12 @@ class VIEW3D_OT_ZagrebGIS(bpy.types.Operator):
 
             start_time = time.time()
             print('GIS INFO: Starting buildings download...')
-            buildings = get_all_buildings(bottom_left, top_right, location_finder)
+            buildings, relations = get_all_buildings(bottom_left, top_right, location_finder)
             print(f'GIS INFO: Buildings downloaded --- {time.time() - start_time:.2f}s')
 
             start_time = time.time()
             create_buildings_many(buildings, location_finder)
+            create_relations_many(relations, location_finder)
             print(f'GIS INFO: Buildings created --- {time.time() - start_time:.2f}s')
 
             start_time = time.time()
