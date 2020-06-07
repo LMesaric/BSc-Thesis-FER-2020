@@ -86,9 +86,6 @@ class VIEW3D_OT_ZagrebGIS(bpy.types.Operator):
             self.report({'INFO'}, "Everything was successfully generated")
             print(f'GIS INFO: Total runtime --- {time.time() - start_time_total:.2f}s')
 
-            # TODO Use for notifications: self.report({'INFO'}, "message")
-            #  {'INFO', 'WARNING', 'ERROR', 'ERROR_INVALID_INPUT', 'ERROR_INVALID_CONTEXT'}
-
             return {'FINISHED'}
 
         except Exception as e:
