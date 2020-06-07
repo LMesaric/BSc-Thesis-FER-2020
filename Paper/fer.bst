@@ -892,7 +892,7 @@ FUNCTION {mastersthesis}
   new.block
   format.title "title" output.check
   new.block
-  "Magistarski rad" format.thesis.type output.nonnull
+  "Diplomski rad" format.thesis.type output.nonnull
   school "school" output.check
   address output
   format.date "year" output.check
