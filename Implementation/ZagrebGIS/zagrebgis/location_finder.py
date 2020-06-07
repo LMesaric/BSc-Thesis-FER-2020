@@ -31,9 +31,7 @@ class LocationFinder:
         self.top_right = top_right
         self.global_coords: List[Vector] = [(obj.matrix_world @ v.co) for v in obj.data.vertices]
         self.x_min = min(self.global_coords, key=lambda v: v.x).x
-        self.x_max = max(self.global_coords, key=lambda v: v.x).x
         self.y_min = min(self.global_coords, key=lambda v: v.y).y
-        self.y_max = max(self.global_coords, key=lambda v: v.y).y
 
     def find_close_points(self, x: float, y: float) -> List[Vector]:
         return list(filter(lambda v: abs(x - v.x) < TERRAIN_CLOSE_THRESH and abs(y - v.y) < TERRAIN_CLOSE_THRESH,
