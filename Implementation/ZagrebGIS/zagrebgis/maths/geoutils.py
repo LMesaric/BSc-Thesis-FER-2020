@@ -18,7 +18,7 @@
 from __future__ import annotations
 
 from math import asin, atan2, cos, degrees, radians, sin, sqrt
-from typing import Optional, Tuple
+from typing import Tuple
 
 _R = 6371008.8
 """Earth's mean radius in meters."""
@@ -76,20 +76,6 @@ class Geolocation:
         horizontal_dist = sqrt(diagonal_dist * diagonal_dist - vertical_dist * vertical_dist)
 
         return vertical_dist, horizontal_dist
-
-    def span_directional(self, top_right: Geolocation) -> Optional[Tuple[float, float]]:
-        """
-        Calculates dimensions of the rectangle defined by `self` and `top_right`
-        as bottom-left and top-right corners, respectively.
-        Returns `None` if corners and not positioned as described.
-
-        :param top_right: Rectangle's top-right point
-        :return: height and width if properly positioned, `None` otherwise
-        """
-
-        if self.lat > top_right.lat or self.long > top_right.long:
-            return None
-        return self.span(top_right)
 
     def is_in_bounds(self, bottom_left: Geolocation, top_right: Geolocation) -> bool:
         """
