@@ -890,7 +890,7 @@ FUNCTION {mastersthesis}
   format.authors "author" output.check
   author format.key output
   new.block
-  format.title "title" output.check
+  format.title emphasize "title" output.check
   new.block
   "Diplomski rad" format.thesis.type output.nonnull
   school "school" output.check
