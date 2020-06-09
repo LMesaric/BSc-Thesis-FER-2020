@@ -20,7 +20,6 @@ TERRAIN_VERTICES_DISTANCE = 4
 
 TERRAIN_CLOSE_THRESH = 0.72 * TERRAIN_VERTICES_DISTANCE
 """Threshold for determining which vertices are considered `close` to a given point."""
-# slightly greater than sqrt(2)/2 which is max distance (square's middle)
 
 HEIGHT_PER_LEVEL = 3.5
 """Estimated height of each floor in buildings."""
