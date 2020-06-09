@@ -17,7 +17,7 @@
 
 from __future__ import annotations
 
-from math import asin, atan2, cos, degrees, radians, sin, sqrt
+from math import atan2, cos, radians, sqrt
 from typing import Tuple
 
 _R = 6371008.8
@@ -95,22 +95,3 @@ class Geolocation:
         if self.long > top_right.long:
             return False
         return True
-
-    def destination(self, distance: float, bearing: float) -> Geolocation:
-        """
-        Calculates the destination point with `self` as the starting point.
-
-        :param distance: Distance to travel, in meters
-        :param bearing: Bearing in radians
-        :return: Destination point
-        """
-
-        lat1 = radians(self.lat)
-        long1 = radians(self.long)
-        ang_dist = distance / _R
-
-        lat2 = asin(sin(lat1) * cos(ang_dist) + cos(lat1) * sin(ang_dist) * cos(bearing))
-        long2 = long1 + atan2(sin(bearing) * sin(ang_dist) * cos(lat1),
-                              cos(ang_dist) - sin(lat1) * sin(lat2))
-
-        return Geolocation(degrees(lat2), degrees((long2 + 540) % 360 - 180))
