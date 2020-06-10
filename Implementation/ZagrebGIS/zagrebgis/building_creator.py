@@ -114,7 +114,7 @@ def verts_and_faces_from_footprint(verts_xy_foot: List[Tuple[float, float]], hei
 
 
 def _generate_faces_indices(n: int) -> List[List[int]]:
-    faces: List[List[int]] = [[i, (i + 1) % n, n + (i + 1) % n, n + i] for i in range(n)]
+    faces = [[i, (i + 1) % n, n + (i + 1) % n, n + i] for i in range(n)]
     faces.append(list(range(n - 1, -1, -1)))
     faces.append(list(range(n, 2 * n)))
     return faces
