@@ -198,7 +198,7 @@ def _parse_height_levels_from_element(element: Dict[str, Any]) -> Tuple[Optional
     way_tags: Optional[Dict[str, Any]] = element.get('tags')
     if way_tags is None:
         return None, None
-    return _parse_height_tag(way_tags), _parse_levels_tag(way_tags)
+    return _parse_height_tag(way_tags), _parse_levels_tags(way_tags)
 
 
 def _parse_height_tag(tags: Dict[str, Any]) -> Optional[float]:
@@ -227,7 +227,7 @@ def _parse_height_tag(tags: Dict[str, Any]) -> Optional[float]:
         return None
 
 
-def _parse_levels_tag(tags: Dict[str, Any]) -> Optional[float]:
+def _parse_levels_tags(tags: Dict[str, Any]) -> Optional[float]:
     levels_raw: Optional[Union[int, float]] = tags.get('levels')
     if levels_raw is None:
         levels_raw = tags.get('building:levels')
@@ -235,8 +235,16 @@ def _parse_levels_tag(tags: Dict[str, Any]) -> Optional[float]:
     if levels_raw is None:
         return None
 
+    levels_roof_raw: Optional[Union[int, float]] = tags.get('roof:levels')
+    levels_roof_parsed = 0.0
+    if levels_roof_raw is not None:
+        try:
+            levels_roof_parsed = float(levels_roof_raw)
+        except ValueError:
+            print(f'Cannot parse roof levels data: {levels_roof_raw}')
+
     try:
-        return float(levels_raw)
+        return float(levels_raw) + levels_roof_parsed
     except ValueError:
         print(f'Cannot parse levels data: {levels_raw}')
         return None
