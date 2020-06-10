@@ -40,6 +40,7 @@ class VIEW3D_OT_ZagrebGIS(bpy.types.Operator):
     lat_top_right: bpy.props.FloatProperty(options={'HIDDEN'})
     long_top_right: bpy.props.FloatProperty(options={'HIDDEN'})
     terrain_height_scale: bpy.props.FloatProperty(options={'HIDDEN'})
+    add_trees_bool: bpy.props.BoolProperty(options={'HIDDEN'})
 
     def execute(self, context):
         if not self._check_input():
@@ -74,14 +75,18 @@ class VIEW3D_OT_ZagrebGIS(bpy.types.Operator):
             create_relations_many(relations, location_finder)
             print(f'GIS INFO: Buildings created --- {time.time() - start_time:.2f}s')
 
-            start_time = time.time()
-            print('GIS INFO: Starting trees download...')
-            trees = get_all_trees(bottom_left, top_right, location_finder)
-            print(f'GIS INFO: Trees downloaded --- {time.time() - start_time:.2f}s')
+            if self.add_trees_bool:
+                start_time = time.time()
+                print('GIS INFO: Starting trees download...')
+                trees = get_all_trees(bottom_left, top_right, location_finder)
+                print(f'GIS INFO: Trees downloaded --- {time.time() - start_time:.2f}s')
 
-            start_time = time.time()
-            create_trees_many(trees, location_finder)
-            print(f'GIS INFO: Trees created --- {time.time() - start_time:.2f}s')
+                start_time = time.time()
+                create_trees_many(trees, location_finder)
+                print(f'GIS INFO: Trees created --- {time.time() - start_time:.2f}s')
+
+            else:
+                print('Skipping generation of trees')
 
             self.report({'INFO'}, "Everything was successfully generated")
             print(f'GIS INFO: Total runtime --- {time.time() - start_time_total:.2f}s')
