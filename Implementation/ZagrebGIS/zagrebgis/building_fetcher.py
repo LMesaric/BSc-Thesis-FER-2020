@@ -253,7 +253,9 @@ def _parse_levels_tags(tags: Dict[str, Any]) -> Optional[float]:
 def _duplicate_height_level_data(ways_all: Dict[int, WayRaw], relations_raw: List[RelationRaw]):
     for r in relations_raw:
         for way_id in chain(r.positive_ways_ids, r.negative_ways_ids):
-            way_raw = ways_all[way_id]
+            way_raw = ways_all.get(way_id)
+            if way_raw is None:
+                continue
             if way_raw.height is None:
                 way_raw.height = r.height
             if way_raw.levels is None:
