@@ -70,10 +70,10 @@ class VIEW3D_PT_ZagrebGISPanel(bpy.types.Panel):
 def register():
     bpy.utils.register_class(VIEW3D_PT_ZagrebGISPanel)
     s = bpy.types.Scene
-    s.global_lat_bottom_left = FloatProperty(default=45.807212, min=-90.0, max=90.0, step=1, precision=6)
-    s.global_long_bottom_left = FloatProperty(default=15.971431, min=-180.0, max=180.0, step=1, precision=6)
-    s.global_lat_top_right = FloatProperty(default=45.809590, min=-90.0, max=90.0, step=1, precision=6)
-    s.global_long_top_right = FloatProperty(default=15.977082, min=-180.0, max=180.0, step=1, precision=6)
+    s.global_lat_bottom_left = FloatProperty(default=45.798, min=-90.0, max=90.0, step=1, precision=6)
+    s.global_long_bottom_left = FloatProperty(default=15.968, min=-180.0, max=180.0, step=1, precision=6)
+    s.global_lat_top_right = FloatProperty(default=45.8038, min=-90.0, max=90.0, step=1, precision=6)
+    s.global_long_top_right = FloatProperty(default=15.9742, min=-180.0, max=180.0, step=1, precision=6)
     s.global_terrain_height_scale = FloatProperty(default=1, min=0, soft_max=3, step=1, precision=3)
     s.global_add_trees_bool = BoolProperty(default=True)
 
