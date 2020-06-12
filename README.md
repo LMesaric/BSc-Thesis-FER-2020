@@ -1,5 +1,5 @@
 # Zagreb District Model Based on Real Data
-BSc Thesis at FER led by prof. dr. sc. Željka Mihajlović
+BSc Thesis at FER under the mentorship of prof. dr. sc. Željka Mihajlović
 
 ---
 
