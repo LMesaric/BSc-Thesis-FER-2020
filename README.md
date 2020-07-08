@@ -7,7 +7,7 @@ Bachelor of Science Thesis at Faculty of Electrical Engineering and Computing, U
 
 ---
 
-## Abstract
+### Abstract
 
 This thesis examines the procedure of automatic computer generation of a three-dimensional model of an arbitrary Zagreb district.
 The discussion is accompanied by the implementation of the solution in software using the *Python* programming language in the form of an add-on for *Blender* toolset.
@@ -19,7 +19,7 @@ The generated city model consists of meshes without textures representing the te
 
 ---
 
-## Examples
+### Examples
 
 **Districts** contains generated models of several Zagreb districts.  
 [Utrina.fbx](Examples/Districts/Utrina.fbx) is the largest generated example, covering an area of <code>1.42 km<sup>2</sup></code>.
