@@ -1,5 +1,9 @@
 # Zagreb District Model Based on Real Data
-BSc Thesis at FER under the mentorship of prof. dr. sc. Željka Mihajlović
+Bachelor of Science Thesis at Faculty of Electrical Engineering and Computing, University of Zagreb, under the mentorship of prof. dr. sc. Željka Mihajlović.
+
+**Paper -** [**PDF**](Paper/zavrsni.pdf)  
+**Presentation -** [**PPTX**](Presentation/Bachelor2020Mesaric_Presentation.pptx)  
+**Blender Add-on -** [**ZIP**](https://github.com/LMesaric/BSc-Thesis-FER-2020/releases/download/v1.0/zagrebgis.zip)
 
 ---
 
