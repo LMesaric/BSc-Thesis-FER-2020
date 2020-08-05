@@ -53,6 +53,10 @@ class VIEW3D_PT_ZagrebGISPanel(bpy.types.Panel):
         layout.row().prop(scene, "global_add_trees_bool", text="Generate trees")
 
         layout.row().separator()
+
+        layout.row().prop(scene, "global_convert_to_tris", text="Use only triangles")
+
+        layout.row().separator()
         layout.row().separator()
 
         row = layout.row()
@@ -65,6 +69,7 @@ class VIEW3D_PT_ZagrebGISPanel(bpy.types.Panel):
         props.long_top_right = scene.global_long_top_right
         props.terrain_height_scale = scene.global_terrain_height_scale
         props.add_trees_bool = scene.global_add_trees_bool
+        props.convert_to_tris = scene.global_convert_to_tris
 
 
 def register():
@@ -76,11 +81,13 @@ def register():
     s.global_long_top_right = FloatProperty(default=15.9742, min=-180.0, max=180.0, step=1, precision=6)
     s.global_terrain_height_scale = FloatProperty(default=1, min=0, soft_max=3, step=1, precision=3)
     s.global_add_trees_bool = BoolProperty(default=True)
+    s.global_convert_to_tris = BoolProperty(default=True)
 
 
 # noinspection PyUnresolvedReferences
 def unregister():
     s = bpy.types.Scene
+    del s.global_convert_to_tris
     del s.global_add_trees_bool
     del s.global_terrain_height_scale
     del s.global_long_top_right

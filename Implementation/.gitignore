@@ -2,7 +2,7 @@
 *.pyc
 *.blend[1-9]
 venv/
-blender_tester.py
+zagrebgis.zip
 
 
 # Created by https://www.gitignore.io/api/python,pycharm+all,unrealengine,visualstudiocode

@@ -28,6 +28,7 @@ from zagrebgis.maths.geoutils import Geolocation
 from zagrebgis.terrain_creator import create_terrain
 from zagrebgis.tree_creator import create_trees_many
 from zagrebgis.tree_fetcher import get_all_trees
+from zagrebgis.triangulator import triangulate_all
 
 
 class VIEW3D_OT_ZagrebGIS(bpy.types.Operator):
@@ -41,6 +42,7 @@ class VIEW3D_OT_ZagrebGIS(bpy.types.Operator):
     long_top_right: bpy.props.FloatProperty(options={'HIDDEN'})
     terrain_height_scale: bpy.props.FloatProperty(options={'HIDDEN'})
     add_trees_bool: bpy.props.BoolProperty(options={'HIDDEN'})
+    convert_to_tris: bpy.props.BoolProperty(options={'HIDDEN'})
 
     def execute(self, context):
         if not self._check_input():
@@ -86,7 +88,14 @@ class VIEW3D_OT_ZagrebGIS(bpy.types.Operator):
                 print(f'GIS INFO: Trees created --- {time.time() - start_time:.2f}s')
 
             else:
-                print('Skipping generation of trees')
+                print('GIS INFO: Skipping generation of trees')
+
+            if self.convert_to_tris:
+                start_time = time.time()
+                triangulate_all()
+                print(f'GIS INFO: Triangulated all meshes --- {time.time() - start_time:.2f}s')
+            else:
+                print('GIS INFO: Skipping mesh triangulation')
 
             self.report({'INFO'}, "Everything was successfully generated")
             print(f'GIS INFO: Total runtime --- {time.time() - start_time_total:.2f}s')
