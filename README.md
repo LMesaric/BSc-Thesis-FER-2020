@@ -3,7 +3,7 @@ Bachelor of Science Thesis at Faculty of Electrical Engineering and Computing, U
 
 **Paper -** [**PDF**](Paper/zavrsni.pdf)  
 **Presentation -** [**PPTX**](Presentation/Bachelor2020Mesaric_Presentation.pptx)  
-**Blender Add-on -** [**ZIP**](https://github.com/LMesaric/BSc-Thesis-FER-2020/releases/download/v1.0/zagrebgis.zip)
+**Blender Add-on -** [**ZIP**](https://github.com/LMesaric/BSc-Thesis-FER-2020/releases/download/v1.1/zagrebgis.zip)
 
 ---
 
